@@ -17,3 +17,5 @@ Route::get('/', function () {
 
 
 Route::post('refunds', 'RefundController@store');
+
+Route::patch('refunds/{refund}', 'RefundController@update');

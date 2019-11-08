@@ -50,7 +50,11 @@ class RefundController extends Controller
      */
     public function update(Request $request, Refund $refund)
     {
-        //
+        $refund->update([
+            'value' => $request->value
+        ]);
+
+        return $refund;
     }
 
     /**
