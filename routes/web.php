@@ -15,6 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('refunds', 'RefundController@index');
 
 Route::post('refunds', 'RefundController@store');
 

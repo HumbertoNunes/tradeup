@@ -14,7 +14,7 @@ class RefundController extends Controller
      */
     public function index()
     {
-        //
+        return Refund::paginate(10);
     }
 
     /**
