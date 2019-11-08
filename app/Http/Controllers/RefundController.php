@@ -25,26 +25,7 @@ class RefundController extends Controller
      */
     public function store(Request $request)
     {
-        $person = \App\Person::firstOrNew(
-            ['identification' => $request->identification],
-            [
-                'name' => $request->name,
-                'identification' => $request->identification,
-                'jobRole' => $request->jobRole,
-                'createdAt' => $request->createdAt
-            ]
-        );
-
-        $person->save();
-
-        $person->refunds()->create([
-            'date' => $request->refunds[0]['date'],
-            'type' => $request->refunds[0]['type'],
-            'description' => $request->refunds[0]['description'],
-            'value' => $request->refunds[0]['value']
-        ]);
-
-        $person->refunds;
+        $person = \App\Person::createRefunds($request);
 
         return response()->json($person, 201);
     }
