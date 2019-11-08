@@ -14,7 +14,7 @@ class RefundController extends Controller
      */
     public function index()
     {
-        return Refund::paginate(10);
+        return response()->json(Refund::paginate(10), 200);
     }
 
     /**
@@ -54,7 +54,7 @@ class RefundController extends Controller
             'value' => $request->value
         ]);
 
-        return $refund;
+        return response()->json($refund, 200);
     }
 
     /**
@@ -65,6 +65,6 @@ class RefundController extends Controller
      */
     public function destroy(Refund $refund)
     {
-        //
+        return response()->json($refund->delete(), 200);
     }
 }
