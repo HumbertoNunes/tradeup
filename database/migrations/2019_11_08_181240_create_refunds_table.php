@@ -19,6 +19,7 @@ class CreateRefundsTable extends Migration
             $table->string('type');
             $table->string('description');
             $table->double('value', 8, 2);
+            $table->unsignedInteger('person_id');
             $table->foreign('person_id')
                 ->references('id')
                 ->on('people')
