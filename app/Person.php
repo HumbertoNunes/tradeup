@@ -8,6 +8,8 @@ class Person extends Model
 {
     public $timestamps = false;
 
+    protected $guarded = [];
+
     public function refunds()
     {
         return $this->hasMany(Refund::class);
