@@ -36,6 +36,8 @@ class Person extends Model
             'value' => $attributes->refunds[0]['value']
         ]);
 
-        return $person->refunds;
+        $person->refunds;
+
+        return $person;
     }
 }
