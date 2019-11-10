@@ -20,7 +20,7 @@ class CreateRefundsTable extends Migration
             $table->string('description');
             $table->double('value', 8, 2);
             $table->softDeletes();
-            $table->unsignedInteger('person_id');
+            $table->unsignedBigInteger('person_id');
             $table->foreign('person_id')
                 ->references('id')
                 ->on('people')
