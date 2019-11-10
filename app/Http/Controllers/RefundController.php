@@ -50,6 +50,8 @@ class RefundController extends Controller
      */
     public function update(Request $request, Refund $refund)
     {
+        abort_if($refund->isApproved(), 403);
+
         $refund->update([
             'value' => $request->value
         ]);
@@ -66,5 +68,18 @@ class RefundController extends Controller
     public function destroy(Refund $refund)
     {
         return response()->json($refund->delete(), 200);
+    }
+
+    /**
+     * Approve the specified resource.
+     *
+     * @param  \App\Refund  $refund
+     * @return \Illuminate\Http\Response
+     */
+    public function approve(Refund $refund)
+    {
+        abort_if($refund->isApproved(), 304);
+
+        return response()->json($refund->approve(), 200);
     }
 }
