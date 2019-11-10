@@ -23,4 +23,6 @@ Route::patch('refunds/{refund}', 'RefundController@update');
 
 Route::delete('refunds/{refund}', 'RefundController@destroy');
 
-Route::get('people/{person}/refunds', 'PersonController@refunds');
+Route::get('people/{person}/refunds/{year}', 'RefundReportController@yearly');
+
+Route::get('people/{person}/refunds/{year}/{month}', 'RefundReportController@monthly');
