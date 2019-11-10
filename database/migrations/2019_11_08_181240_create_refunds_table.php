@@ -19,6 +19,7 @@ class CreateRefundsTable extends Migration
             $table->string('type');
             $table->string('description');
             $table->double('value', 8, 2);
+            $table->boolean('approved')->default(false);
             $table->softDeletes();
             $table->unsignedBigInteger('person_id');
             $table->foreign('person_id')
