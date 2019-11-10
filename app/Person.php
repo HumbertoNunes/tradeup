@@ -54,42 +54,38 @@ class Person extends Model
      * @param  int  $month,  int  $year
      * @return \App\Person
      */
-    public function monthlyReport(int $month, ?int $year)
+    public function monthlyReport(?int $month, int $year)
     {
-        if (!isset($year)) {
-            $years = $this->getYears($month);
-        } else {
-            $years = collect([$year]);
+        if(empty($month))
+            return $this->yearlyReport($year);
+        $refunds = $this->refunds()->whereMonth('date', $month)->whereYear('date', $year)->get();
+
+        if ($refunds->isNotEmpty()) {
+            $this->totalRefunds = $refunds->count();
+            $this->refunds = $refunds->sum('value');
+            $this->month = $month;
+            $this->year = $year;
+
+            return $this->only('month', 'year', 'totalRefunds', 'refunds');
         }
-
-        return $years->map(function ($year) use ($month) {
-            $refunds = $this->refunds()->whereMonth('date', $month)->whereYear('date', $year)->get();
-            
-            if ($refunds->isNotEmpty()) {
-                $this->totalRefunds = $refunds->count();
-                $this->refunds = $refunds->sum('value');
-                $this->month = $month;
-                $this->year = $year;
-
-                return $this->only('month', 'year', 'totalRefunds', 'refunds');
-            }
-        });
     }
 
     /**
-     * Retrieve all the (unique) years that have at least one refund.
+     * Shows a person's yearly refund report.
      *
-     * @param  int  $month
-     * @return collection
+     * @param  int  $year
+     * @return \App\Person
      */
-    private function getYears(int $month)
+    public function yearlyReport(int $year)
     {
-        $dates = $this->refunds()->whereMonth('date', $month)->pluck('date');
+        $refunds = $this->refunds()->whereYear('date', $year)->get();
 
-        $years = $dates->map(function ($date) {
-            return Carbon::parse($date)->year;
-        });
+        if ($refunds->isNotEmpty()) {
+            $this->totalRefunds = $refunds->count();
+            $this->refunds = $refunds->sum('value');
+            $this->year = $year;
 
-        return $years->unique()->values();
+            return $this->only('year', 'totalRefunds', 'refunds');
+        }
     }
 }
