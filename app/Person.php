@@ -24,7 +24,7 @@ class Person extends Model
      */
     public static function createRefunds($attributes)
     {
-    	$person = Person::firstOrNew(
+        $person = Person::firstOrNew(
             ['identification' => $attributes->identification],
             [
                 'name' => $attributes->name,
@@ -47,22 +47,45 @@ class Person extends Model
 
         return $person;
     }
-    
+
     /**
      * Shows a person's monthly refund report.
      *
      * @param  int  $month,  int  $year
      * @return \App\Person
      */
-    public function monthlyReport(int $month, int $year)
+    public function monthlyReport(int $month)
     {
-        $refunds = $this->refunds()->whereMonth('date', $month)->whereYear('date', $year)->get();
-        
-        $this->month = $month;
-        $this->year = $year;
-        $this->totalRefunds = $refunds->count();
-        $this->refunds = $refunds->sum('value');
+        $years = $this->getYears($month);
 
-        return $this;
+        return $years->map(function ($year) use ($month) {
+            $refunds = $this->refunds()->whereMonth('date', $month)->whereYear('date', $year)->get();
+            
+            if ($refunds->isNotEmpty()) {
+                $this->totalRefunds = $refunds->count();
+                $this->refunds = $refunds->sum('value');
+                $this->month = $month;
+                $this->year = $year;
+
+                return $this->only('month', 'year', 'totalRefunds', 'refunds');
+            }
+        });
+    }
+
+    /**
+     * Retrieve all the (unique) years that have at least one refund.
+     *
+     * @param  int  $month
+     * @return collection
+     */
+    private function getYears(int $month)
+    {
+        $dates = $this->refunds()->whereMonth('date', $month)->pluck('date');
+
+        $years = $dates->map(function ($date) {
+            return Carbon::parse($date)->year;
+        });
+
+        return $years->unique()->values();
     }
 }

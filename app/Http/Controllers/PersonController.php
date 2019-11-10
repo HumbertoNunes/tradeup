@@ -16,11 +16,9 @@ class PersonController extends Controller
     public function refunds(Person $person)
     {
         $report = $person->monthlyReport(request('month'), request('year'));
-
-        if (!$report->refunds) {
-            return response()->json([], 204);
-        }
-
-        return response()->json($report->only('month', 'year', 'totalRefunds', 'refunds'), 200);
+        
+        abort_if($report->isEmpty(), 204);
+        
+        return response()->json($report, 200);
     }
 }
