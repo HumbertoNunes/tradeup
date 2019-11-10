@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Person extends Model
 {
@@ -15,6 +16,12 @@ class Person extends Model
         return $this->hasMany(Refund::class);
     }
 
+    /**
+     * Finds or creates a user and associates the new refund.
+     *
+     * @param  int  $attributes
+     * @return \App\Person
+     */
     public static function createRefunds($attributes)
     {
     	$person = Person::firstOrNew(
@@ -23,14 +30,14 @@ class Person extends Model
                 'name' => $attributes->name,
                 'identification' => $attributes->identification,
                 'jobRole' => $attributes->jobRole,
-                'createdAt' => $attributes->createdAt
+                'createdAt' => Carbon::create($attributes->createdAt)
             ]
         );
 
         $person->save();
 
         $person->refunds()->create([
-            'date' => $attributes->refunds[0]['date'],
+            'date' => Carbon::create($attributes->refunds[0]['date']),
             'type' => $attributes->refunds[0]['type'],
             'description' => $attributes->refunds[0]['description'],
             'value' => $attributes->refunds[0]['value']
@@ -39,5 +46,23 @@ class Person extends Model
         $person->refunds;
 
         return $person;
+    }
+    
+    /**
+     * Shows a person's monthly refund report.
+     *
+     * @param  int  $month,  int  $year
+     * @return \App\Person
+     */
+    public function monthlyReport(int $month, int $year)
+    {
+        $refunds = $this->refunds()->whereMonth('date', $month)->whereYear('date', $year)->get();
+        
+        $this->month = $month;
+        $this->year = $year;
+        $this->totalRefunds = $refunds->count();
+        $this->refunds = $refunds->sum('value');
+
+        return $this;
     }
 }

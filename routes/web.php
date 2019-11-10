@@ -22,3 +22,5 @@ Route::post('refunds', 'RefundController@store');
 Route::patch('refunds/{refund}', 'RefundController@update');
 
 Route::delete('refunds/{refund}', 'RefundController@destroy');
+
+Route::get('people/{person}/refunds', 'PersonController@refunds');

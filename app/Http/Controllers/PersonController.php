@@ -8,57 +8,19 @@ use Illuminate\Http\Request;
 class PersonController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  \App\Person  $person
      * @return \Illuminate\Http\Response
      */
-    public function show(Person $person)
+    public function refunds(Person $person)
     {
-        //
-    }
+        $report = $person->monthlyReport(request('month'), request('year'));
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Person  $person
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Person $person)
-    {
-        //
-    }
+        if (!$report->refunds) {
+            return response()->json([], 204);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Person  $person
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Person $person)
-    {
-        //
+        return response()->json($report->only('month', 'year', 'totalRefunds', 'refunds'), 200);
     }
 }
