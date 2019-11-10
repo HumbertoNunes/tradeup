@@ -54,9 +54,13 @@ class Person extends Model
      * @param  int  $month,  int  $year
      * @return \App\Person
      */
-    public function monthlyReport(int $month)
+    public function monthlyReport(int $month, ?int $year)
     {
-        $years = $this->getYears($month);
+        if (!isset($year)) {
+            $years = $this->getYears($month);
+        } else {
+            $years = collect([$year]);
+        }
 
         return $years->map(function ($year) use ($month) {
             $refunds = $this->refunds()->whereMonth('date', $month)->whereYear('date', $year)->get();
