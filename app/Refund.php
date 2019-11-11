@@ -18,7 +18,13 @@ class Refund extends Model
         return $this->belongsTo(Person::class);
     }
 
-    public function rectify($value)
+    /**
+     * Updates the refunds value.
+     *
+     * @param int $value
+     * @return bool
+     */
+    public function rectify(int $value)
     {
         if (!$this->isApproved()) {
             $this->value = $value;
@@ -44,12 +50,81 @@ class Refund extends Model
     }
 
     /**
-     * Return the current status of the specified refund.
+     * Returns the current status of the specified refund.
      *
      * @return boolean
      */
     public function isApproved()
     {
         return $this->approved;
+    }
+
+    /**
+     * Shows a person's monthly refund report.
+     *
+     * @param  int  $month,  int  $year
+     * @return \App\Person
+     */
+    public static function report(Person $person, int $year, int $month)
+    {
+        $refunds = Refund::wherePersonId($person->id)
+        ->whereYear('date', $year)
+        ->whereMonth('date', $month)->first();
+
+        if (!empty($refunds)) {
+            $refunds->totalRefunds = $refunds->count();
+            $refunds->refunds = $refunds->sum('value');
+            $refunds->month = $month;
+            $refunds->year = $year;
+
+            return $refunds;
+        }
+    }
+
+    public function export()
+    {
+        $owner = $this->getOwner();
+
+        $this->toArray();
+
+        $report = $this->only('month', 'year', 'totalRefunds', 'refunds');
+
+        $keys = array_keys($report);
+
+        $fileName = storage_path()."\\app\\report_{$owner}_{$this->month}_{$this->year}.csv";
+
+        $this->toCSV($fileName, $keys, $report);
+
+        return response()->download($fileName)->deleteFileAfterSend();;
+    }
+
+    /**
+     * Returns the refund owner's name in snake case.
+     *
+     * @return string
+     */
+    public function getOwner()
+    {
+        $this->makeHidden(['person']);
+
+        $owner = preg_replace('/ /', '_', $this->person->name);
+
+        return mb_strtolower($owner);
+    }
+
+    /**
+     * Creates the reports CSV file.
+     *
+     * @return string
+     */
+    public function toCSV(string $fileName, array $keys, $report)
+    {
+        $fo = fopen($fileName, 'w');
+
+        fputcsv($fo, $keys);
+
+        fputcsv($fo, $report);
+        
+        fclose($fo);
     }
 }
