@@ -25,6 +25,8 @@ class RefundReportController extends Controller
         
         abort_if($refunds->isEmpty(), 204);
 
-        return response()->json(Refund::report($person, $request->year, $request->month)->export(), 200);
+        $fileName = Refund::report($person, $request->year, $request->month)->export();
+
+        return response()->download($fileName)->deleteFileAfterSend();
     }
 }

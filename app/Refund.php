@@ -93,9 +93,7 @@ class Refund extends Model
 
         $fileName = storage_path()."\\app\\report_{$owner}_{$this->month}_{$this->year}.csv";
 
-        $this->toCSV($fileName, $keys, $report);
-
-        return response()->download($fileName)->deleteFileAfterSend();;
+        return $this->toCSV($fileName, $keys, $report);
     }
 
     /**
@@ -126,5 +124,7 @@ class Refund extends Model
         fputcsv($fo, $report);
         
         fclose($fo);
+
+        return $fileName;
     }
 }
