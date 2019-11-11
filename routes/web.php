@@ -21,10 +21,10 @@ Route::post('refunds', 'RefundController@store');
 
 Route::patch('refunds/{refund}', 'RefundController@update');
 
-Route::patch('refunds/{refund}/approve', 'RefundController@approve');
-
 Route::delete('refunds/{refund}', 'RefundController@destroy');
 
-Route::get('people/{person}/refunds/{year}', 'RefundReportController@yearly');
+Route::patch('refunds/{refund}/approve', 'RefundController@approve');
 
 Route::get('people/{person}/refunds/{year}/{month}', 'RefundReportController@monthly');
+
+Route::get('people/{person}/export/refunds/{year}/{month}', 'RefundReportController@export');
