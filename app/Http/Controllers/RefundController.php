@@ -31,17 +31,6 @@ class RefundController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Refund  $refund
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Refund $refund)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
