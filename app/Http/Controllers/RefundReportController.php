@@ -3,25 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Refund;
 use App\Person;
 
 class RefundReportController extends Controller
 {
-    public function yearly(Request $request, Person $person, int $year)
+    public function monthly(Request $request, Person $person)
     {
-        $report = $person->yearlyReport($request->year);
+        $report = Refund::report($person, $request->year, $request->month);
 
-        abort_if(empty($report), 204);
-
-        return response()->json($report, 200);
+        return $report->only('month', 'year', 'totalRefunds', 'refunds');
     }
 
-    public function monthly(Request $request, Person $person, int $year, int$month)
+    public function export(Request $request, Person $person)
     {
-        $report = $person->monthlyReport($request->month, $request->year);
+        $refunds = Refund::whereYear('date', $request->year)->whereMonth('date', $request->month)->get();
+        
+        abort_if($refunds->isEmpty(), 204);
 
-        abort_if(empty($report), 204);
-
-        return response()->json($report, 200);
+        return Refund::report($person, $request->year, $request->month)->export();
     }
 }
