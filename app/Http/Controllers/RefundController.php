@@ -50,11 +50,7 @@ class RefundController extends Controller
      */
     public function update(Request $request, Refund $refund)
     {
-        abort_if($refund->isApproved(), 403);
-
-        $refund->update([
-            'value' => $request->value
-        ]);
+        abort_if($refund->rectify($request->value), 403);
 
         return response()->json($refund, 200);
     }

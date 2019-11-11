@@ -18,6 +18,17 @@ class Refund extends Model
         return $this->belongsTo(Person::class);
     }
 
+    public function rectify($value)
+    {
+        if (!$this->isApproved()) {
+            $this->value = $value;
+
+            $this->save();
+        }
+
+        return $this->isApproved();
+    }
+
     /**
      * Approve the specified refund.
      *
