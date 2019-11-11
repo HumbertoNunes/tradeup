@@ -47,45 +47,4 @@ class Person extends Model
 
         return $person;
     }
-
-    /**
-     * Shows a person's monthly refund report.
-     *
-     * @param  int  $month,  int  $year
-     * @return \App\Person
-     */
-    public function monthlyReport(?int $month, int $year)
-    {
-        if(empty($month))
-            return $this->yearlyReport($year);
-        $refunds = $this->refunds()->whereMonth('date', $month)->whereYear('date', $year)->get();
-
-        if ($refunds->isNotEmpty()) {
-            $this->totalRefunds = $refunds->count();
-            $this->refunds = $refunds->sum('value');
-            $this->month = $month;
-            $this->year = $year;
-
-            return $this->only('month', 'year', 'totalRefunds', 'refunds');
-        }
-    }
-
-    /**
-     * Shows a person's yearly refund report.
-     *
-     * @param  int  $year
-     * @return \App\Person
-     */
-    public function yearlyReport(int $year)
-    {
-        $refunds = $this->refunds()->whereYear('date', $year)->get();
-
-        if ($refunds->isNotEmpty()) {
-            $this->totalRefunds = $refunds->count();
-            $this->refunds = $refunds->sum('value');
-            $this->year = $year;
-
-            return $this->only('year', 'totalRefunds', 'refunds');
-        }
-    }
 }
