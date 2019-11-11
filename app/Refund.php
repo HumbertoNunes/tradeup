@@ -21,10 +21,10 @@ class Refund extends Model
     /**
      * Updates the refunds value.
      *
-     * @param int $value
+     * @param float $value
      * @return bool
      */
-    public function rectify(int $value)
+    public function rectify(float $value)
     {
         if (!$this->isApproved()) {
             $this->value = $value;
@@ -60,7 +60,7 @@ class Refund extends Model
     }
 
     /**
-     * Shows a person's monthly refund report.
+     * Shows a monthly report of the given person.
      *
      * @param  int  $month,  int  $year
      * @return \App\Person
