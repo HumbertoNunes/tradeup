@@ -15,16 +15,9 @@ use Illuminate\Http\Request;
 
 Route::namespace('Auth')->group(function () {
 
-	Route::post('login', function () {
-		$credentials = ['email' => request('email'), 'password' => request('password')];
-
-		if (!Auth::attempt($credentials)) {
-			abort(401);
-		}
-		return auth()->user()->api_token;
-	});
-
 	Route::post('register', 'RegisterController@register');
+
+	Route::post('login', 'LoginController@login');
 });
 
 Route::middleware('auth:api')->group(function () {
