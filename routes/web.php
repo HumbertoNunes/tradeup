@@ -14,17 +14,3 @@
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('refunds', 'RefundController@index');
-
-Route::post('refunds', 'RefundController@store');
-
-Route::patch('refunds/{refund}', 'RefundController@update');
-
-Route::delete('refunds/{refund}', 'RefundController@destroy');
-
-Route::patch('refunds/{refund}/approve', 'RefundController@approve');
-
-Route::get('people/{person}/refunds/{year}/{month}', 'RefundReportController@monthly');
-
-Route::get('people/{person}/export/refunds/{year}/{month}', 'RefundReportController@export');
