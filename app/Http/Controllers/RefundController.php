@@ -52,7 +52,9 @@ class RefundController extends Controller
      */
     public function destroy(Refund $refund)
     {
-        return response()->json($refund->delete(), 200);
+        $refund->delete();
+
+        return response()->json(['message' => 'Resource deleted.'], 200);
     }
 
     /**
@@ -65,6 +67,8 @@ class RefundController extends Controller
     {
         abort_if($refund->isApproved(), 304);
 
-        return response()->json($refund->approve(), 200);
+        $refund->approve();
+
+        return response()->json(['message' => 'Resource approved.'], 200);
     }
 }
