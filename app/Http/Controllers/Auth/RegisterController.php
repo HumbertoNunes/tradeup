@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Firebase\JWT\JWT;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -70,5 +71,14 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
             'api_token' => JWT::encode($data['email'], env('JWT_KEY'))
         ]);
+    }
+
+    protected function registered(Request $request, $user)
+    {
+        return response()->json([
+            'message' => 'User created successfully',
+            'name' => $user->name,
+            'email' => $user->email
+        ], 201);
     }
 }
