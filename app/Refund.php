@@ -145,6 +145,8 @@ class Refund extends Model
 
         $this->image = $image;
 
+        $this->save();
+
         return $this->image;
     }
 

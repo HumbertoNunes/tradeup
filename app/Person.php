@@ -22,25 +22,31 @@ class Person extends Model
      * @param  int  $attributes
      * @return \App\Person
      */
-    public static function createRefunds($attributes)
+    public static function createRefunds($request)
     {
         $person = Person::firstOrNew(
-            ['identification' => $attributes->identification],
+            ['identification' => $request->identification],
             [
-                'name' => $attributes->name,
-                'identification' => $attributes->identification,
-                'jobRole' => $attributes->jobRole,
-                'createdAt' => Carbon::create($attributes->createdAt)
+                'name' => $request->name,
+                'identification' => $request->identification,
+                'jobRole' => $request->jobRole,
+                'createdAt' => Carbon::create($request->createdAt)
             ]
         );
 
         $person->save();
 
-        return $person->refunds()->create([
-            'date' => Carbon::create($attributes->refunds[0]['date']),
-            'type' => $attributes->refunds[0]['type'],
-            'description' => $attributes->refunds[0]['description'],
-            'value' => $attributes->refunds[0]['value']
+        $person = $person->refunds()->create([
+            'date' => Carbon::create($request->refunds[0]['date']),
+            'type' => $request->refunds[0]['type'],
+            'description' => $request->refunds[0]['description'],
+            'value' => $request->refunds[0]['value']
         ]);
+
+        if ($request->has('image')) {
+            $refund->imageUpload($request);
+        }
+
+        return $person;
     }
 }
