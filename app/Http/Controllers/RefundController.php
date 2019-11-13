@@ -14,6 +14,8 @@ class RefundController extends Controller
      */
     public function index()
     {
+        abort_unless(Refund::exists(), 204);
+        
         return response()->json(Refund::paginate(10), 200);
     }
 
@@ -39,7 +41,12 @@ class RefundController extends Controller
      */
     public function update(Request $request, Refund $refund)
     {
-        abort_if($refund->rectify($request->value), 403);
+        if ($refund->rectify($request->value)) {
+            return response()->json([
+                'message' => 'Refund already approved cannot be modified.'
+            ], 422);
+        }
+
 
         return response()->json($refund, 200);
     }
@@ -65,7 +72,11 @@ class RefundController extends Controller
      */
     public function approve(Refund $refund)
     {
-        abort_if($refund->isApproved(), 304);
+        if ($refund->isApproved()) {
+            return response()->json([
+                'message' => "Refund it's already approved."
+            ], 422);
+        }
 
         $refund->approve();
 
