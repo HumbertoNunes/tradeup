@@ -70,9 +70,9 @@ class Refund extends Model
     public static function report(Request $request, Person $person)
     {
         $refunds = Refund::wherePersonId($person->id)
-                                ->whereMonth('date', $request->month)
-                                ->whereYear('date', $request->year)
-                                ->get();
+        ->whereMonth('date', $request->month)
+        ->whereYear('date', $request->year)
+        ->get();
 
 
         if ($refunds->isNotEmpty()) {
@@ -154,9 +154,9 @@ class Refund extends Model
     public static function filter(Request $request, Person $person)
     {
         return Refund::wherePersonId($person->id)
-                                ->whereMonth('date', $request->month)
-                                ->whereYear('date', $request->year)
-                                ->get();
+        ->whereMonth('date', $request->month)
+        ->whereYear('date', $request->year)
+        ->get();
     }
 
     public static function perPage($limit)
@@ -164,11 +164,16 @@ class Refund extends Model
         $refunds = Refund::paginate($limit);
 
         foreach ($refunds->items() as $refund) {
-            $refund->date = \Carbon\Carbon::parse($refund->date)->format(\DateTime::ATOM);
-
-            $refund->makeHidden('deleted_at');
+            $refund->setDateFormat(\DateTime::ATOM);
         }
 
         return $refunds;
+    }
+
+    public function setDateFormat($format)
+    {
+        $this->date = \Carbon\Carbon::parse($this->date)->format($format);
+
+        $this->makeHidden('deleted_at');
     }
 }

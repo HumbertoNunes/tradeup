@@ -31,7 +31,6 @@ class RefundController extends Controller
             'name' => 'required',
             'identification' => 'required',
             'jobRole' => 'required',
-            'createdAt' => 'required|date',
             'refunds.*.date' => 'required|date',
             'refunds.*.type' => 'required',
             'refunds.*.description' => 'required',

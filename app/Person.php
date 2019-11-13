@@ -30,14 +30,14 @@ class Person extends Model
                 'name' => $request->name,
                 'identification' => $request->identification,
                 'jobRole' => $request->jobRole,
-                'createdAt' => Carbon::create($request->createdAt)
+                'createdAt' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')
             ]
         );
 
         $person->save();
 
-        $person = $person->refunds()->create([
-            'date' => Carbon::create($request->refunds[0]['date']),
+        $refund = $person->refunds()->create([
+            'date' => Carbon::create($request->refunds[0]['date'])->format('Y-m-d H:i:s'),
             'type' => $request->refunds[0]['type'],
             'description' => $request->refunds[0]['description'],
             'value' => $request->refunds[0]['value']
@@ -47,6 +47,8 @@ class Person extends Model
             $refund->imageUpload($request);
         }
 
-        return $person;
+        $refund->setDateFormat(\DateTime::ATOM);
+
+        return $refund;
     }
 }
