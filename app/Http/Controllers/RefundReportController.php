@@ -14,7 +14,7 @@ class RefundReportController extends Controller
 
         $report = Refund::report($request, $person);
 
-        return response()->json($report, 200);
+        return response()->json($report->only('month', 'year', 'totalRefunds', 'refunds'), 200);
     }
 
     public function export(Request $request, Person $person)
