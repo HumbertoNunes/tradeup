@@ -16,7 +16,7 @@ class RefundController extends Controller
     {
         abort_unless(Refund::exists(), 204);
 
-        return response()->json(Refund::paginate(10), 200);
+        return response()->json(Refund::perPage(10), 200);
     }
 
     /**
@@ -62,7 +62,6 @@ class RefundController extends Controller
             ], 422);
         }
 
-
         return response()->json($refund, 200);
     }
 
@@ -98,9 +97,15 @@ class RefundController extends Controller
         return response()->json(['message' => 'Resource approved.'], 200);
     }
 
+    /**
+     * Upload an image and save it to the specified resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Refund  $refund
+     * @return \Illuminate\Http\Response
+     */
     public function upload(Request $request, Refund $refund)
     {
         return $refund->imageUpload($request);
-
     }
 }
