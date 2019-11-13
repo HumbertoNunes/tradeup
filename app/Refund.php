@@ -127,4 +127,15 @@ class Refund extends Model
 
         return $fileName;
     }
+
+    public function imageUpload($request)
+    {
+        $request->validate([
+            'image' => 'required|image'
+        ]);
+
+        $ext = $request->image->extension();
+
+        return $request->file('image')->storeAs('vouchers', $this->id.'.'.$ext);
+    }
 }

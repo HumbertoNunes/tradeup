@@ -25,9 +25,9 @@ class RefundController extends Controller
      */
     public function store(Request $request)
     {
-        $person = \App\Person::createRefunds($request);
+        $refund = \App\Person::createRefunds($request);
 
-        return response()->json($person, 201);
+        return response()->json($refund, 201);
     }
 
     /**
@@ -70,5 +70,11 @@ class RefundController extends Controller
         $refund->approve();
 
         return response()->json(['message' => 'Resource approved.'], 200);
+    }
+
+    public function upload(Request $request, Refund $refund)
+    {
+        return $refund->imageUpload($request);
+
     }
 }
