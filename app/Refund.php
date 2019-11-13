@@ -133,7 +133,7 @@ class Refund extends Model
         return $fileName;
     }
 
-    public function imageUpload($request)
+    public function imageUpload(Request $request)
     {
         $request->validate([
             'image' => 'required|image'
