@@ -10,22 +10,20 @@ class RefundReportController extends Controller
 {
     public function monthly(Request $request, Person $person)
     {
-        $refunds = Refund::whereYear('date', $request->year)->whereMonth('date', $request->month)->get();
-        
-        abort_if($refunds->isEmpty(), 204);
+        abort_if(Refund::filter($request, $person)->isEmpty(), 204);
 
-        $report = Refund::report($person, $request->year, $request->month);
+        $report = Refund::report($request, $person);
 
-        return response()->json($report->only('month', 'year', 'totalRefunds', 'refunds'), 200);
+        return response()->json($report, 200);
     }
 
     public function export(Request $request, Person $person)
     {
-        $refunds = Refund::whereYear('date', $request->year)->whereMonth('date', $request->month)->get();
+        $refunds = Refund::filter($request, $person);
         
         abort_if($refunds->isEmpty(), 204);
 
-        $fileName = Refund::report($person, $request->year, $request->month)->export();
+        $fileName = Refund::report($request, $person)->export();
 
         return response()->download($fileName)->deleteFileAfterSend();
     }

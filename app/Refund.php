@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Person;
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -65,19 +67,22 @@ class Refund extends Model
      * @param  int  $month,  int  $year
      * @return \App\Person
      */
-    public static function report(Person $person, int $year, int $month)
+    public static function report(Request $request, Person $person)
     {
         $refunds = Refund::wherePersonId($person->id)
-        ->whereYear('date', $year)
-        ->whereMonth('date', $month)->first();
+                                ->whereMonth('date', $request->month)
+                                ->whereYear('date', $request->year)
+                                ->get();
 
-        if (!empty($refunds)) {
-            $refunds->totalRefunds = $refunds->sum('value');
-            $refunds->refunds = $refunds->count();
-            $refunds->month = $month;
-            $refunds->year = $year;
+        $report = new \stdClass();
 
-            return $refunds;
+        if ($refunds->isNotEmpty()) {
+            $report->month = $request->month;
+            $report->year = $request->year;
+            $report->totalRefunds = $refunds->sum('value');
+            $report->refunds = $refunds->count();
+
+            return $report;
         }
     }
 
@@ -91,7 +96,7 @@ class Refund extends Model
 
         $keys = array_keys($report);
 
-        $fileName = storage_path()."\\app\\report_{$owner}_{$this->month}_{$this->year}.csv";
+        $fileName = storage_path() . "\\app\\report_{$owner}_{$this->month}_{$this->year}.csv";
 
         return $this->toCSV($fileName, $keys, $report);
     }
@@ -136,6 +141,14 @@ class Refund extends Model
 
         $ext = $request->image->extension();
 
-        return $request->file('image')->storeAs('vouchers', $this->id.'.'.$ext);
+        return $request->file('image')->storeAs('vouchers', $this->id . '.' . $ext);
+    }
+
+    public static function filter(Request $request, Person $person)
+    {
+        return Refund::wherePersonId($person->id)
+                                ->whereMonth('date', $request->month)
+                                ->whereYear('date', $request->year)
+                                ->get();
     }
 }
