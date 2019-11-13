@@ -74,9 +74,10 @@ class Refund extends Model
                                 ->whereYear('date', $request->year)
                                 ->get();
 
-        $report = new \stdClass();
 
         if ($refunds->isNotEmpty()) {
+            $report = $refunds->first();
+            
             $report->month = $request->month;
             $report->year = $request->year;
             $report->totalRefunds = $refunds->sum('value');
