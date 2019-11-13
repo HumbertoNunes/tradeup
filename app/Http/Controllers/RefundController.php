@@ -15,7 +15,7 @@ class RefundController extends Controller
     public function index()
     {
         abort_unless(Refund::exists(), 204);
-        
+
         return response()->json(Refund::paginate(10), 200);
     }
 
@@ -27,6 +27,17 @@ class RefundController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required',
+            'identification' => 'required',
+            'jobRole' => 'required',
+            'createdAt' => 'required|date',
+            'refunds.*.date' => 'required|date',
+            'refunds.*.type' => 'required',
+            'refunds.*.description' => 'required',
+            'refunds.*.value' => 'required|numeric',
+        ]);
+
         $refund = \App\Person::createRefunds($request);
 
         return response()->json($refund, 201);
@@ -41,6 +52,10 @@ class RefundController extends Controller
      */
     public function update(Request $request, Refund $refund)
     {
+        $request->validate([
+            'value' => 'required|numeric'
+        ]);
+        
         if ($refund->rectify($request->value)) {
             return response()->json([
                 'message' => 'Refund already approved cannot be modified.'
