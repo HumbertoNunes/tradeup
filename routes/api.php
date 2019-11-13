@@ -32,6 +32,8 @@ Route::middleware('auth:api')->group(function () {
 
 	Route::patch('refunds/{refund}/approve', 'RefundController@approve');
 
+	Route::post('refunds/{refund}/image', 'RefundController@upload');
+
 	Route::get('people/{person}/refunds/{year}/{month}', 'RefundReportController@monthly');
 
 	Route::get('people/{person}/export/refunds/{year}/{month}', 'RefundReportController@export');
