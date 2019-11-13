@@ -141,7 +141,11 @@ class Refund extends Model
 
         $ext = $request->image->extension();
 
-        return $request->file('image')->storeAs('vouchers', $this->id . '.' . $ext);
+        $image = $request->file('image')->storeAs('vouchers', $this->id . '.' . $ext);
+
+        $this->image = $image;
+
+        return $this->image;
     }
 
     public static function filter(Request $request, Person $person)
@@ -150,5 +154,18 @@ class Refund extends Model
                                 ->whereMonth('date', $request->month)
                                 ->whereYear('date', $request->year)
                                 ->get();
+    }
+
+    public static function perPage($limit)
+    {
+        $refunds = Refund::paginate($limit);
+
+        foreach ($refunds->items() as $refund) {
+            $refund->date = \Carbon\Carbon::parse($refund->date)->format(\DateTime::ATOM);
+
+            $refund->makeHidden('deleted_at');
+        }
+
+        return $refunds;
     }
 }
