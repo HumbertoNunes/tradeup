@@ -72,8 +72,8 @@ class Refund extends Model
         ->whereMonth('date', $month)->first();
 
         if (!empty($refunds)) {
-            $refunds->totalRefunds = $refunds->count();
-            $refunds->refunds = $refunds->sum('value');
+            $refunds->totalRefunds = $refunds->sum('value');
+            $refunds->refunds = $refunds->count();
             $refunds->month = $month;
             $refunds->year = $year;
 
