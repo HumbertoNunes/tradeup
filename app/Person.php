@@ -36,15 +36,11 @@ class Person extends Model
 
         $person->save();
 
-        $person->refunds()->create([
+        return $person->refunds()->create([
             'date' => Carbon::create($attributes->refunds[0]['date']),
             'type' => $attributes->refunds[0]['type'],
             'description' => $attributes->refunds[0]['description'],
             'value' => $attributes->refunds[0]['value']
         ]);
-
-        $person->refunds;
-
-        return $person;
     }
 }
