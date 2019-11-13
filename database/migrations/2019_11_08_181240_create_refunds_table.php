@@ -15,7 +15,7 @@ class CreateRefundsTable extends Migration
     {
         Schema::create('refunds', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestampTz('date');
+            $table->timestamp('date');
             $table->string('type');
             $table->string('description');
             $table->double('value', 8, 2);
