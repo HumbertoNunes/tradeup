@@ -43,10 +43,8 @@ class Person extends Model
             'value' => $request->refunds[0]['value']
         ]);
 
-        $collection = collect($request->refunds[0]);
-
-        if ($collection->has('image')) {
-            $refund->image = \Storage::put('file.jpg', $collection['image']);
+        if ($request->has('image')) {
+            $refund->image = $refund->imageUpload($request);
         }
 
         $refund->setDateFormat(\DateTime::ATOM);
